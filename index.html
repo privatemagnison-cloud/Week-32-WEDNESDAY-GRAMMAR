@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammar Week 32 Practice Review</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-gray: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --correct-bg: #dcfce7;
+            --correct-border: #86efac;
+            --correct-text: #166534;
+            --incorrect-bg: #fef2f2;
+            --incorrect-border: #fca5a5;
+            --incorrect-text: #991b1b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 20px 10px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Disclaimer Banner */
+        .warning-banner {
+            background-color: #fef3c7;
+            border-left: 6px solid #f59e0b;
+            color: #92400e;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+
+        /* Header Info */
+        header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: #1e293b;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .field-group input {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .field-group input:focus {
+            border-color: var(--primary);
+        }
+
+        /* Score Banner */
+        #score-banner {
+            display: none;
+            background: #eff6ff;
+            border: 2px solid #93c5fd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        #score-banner h2 {
+            font-size: 1.5rem;
+            color: #1e40af;
+        }
+
+        /* Section Styling */
+        .section-box {
+            margin-bottom: 35px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Word Bank */
+        .word-bank {
+            background-color: #f1f5f9;
+            border: 1px dashed #94a3b8;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            color: #334155;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .word-bank-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Question Item */
+        .question-item {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .question-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-header {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+            display: none;
+        }
+
+        .status-badge.correct {
+            display: inline-block;
+            background-color: var(--correct-bg);
+            color: var(--correct-text);
+            border: 1px solid var(--correct-border);
+        }
+
+        .status-badge.incorrect {
+            display: inline-block;
+            background-color: var(--incorrect-bg);
+            color: var(--incorrect-text);
+            border: 1px solid var(--incorrect-border);
+        }
+
+        /* Inputs & Options */
+        .options-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .option-label:hover {
+            background: #f1f5f9;
+        }
+
+        input[type="text"], select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            width: 100%;
+            max-width: 380px;
+            outline: none;
+            margin-top: 5px;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        /* Feedback Explanation Box */
+        .explanation-box {
+            display: none;
+            margin-top: 10px;
+            padding: 12px;
+            background-color: var(--incorrect-bg);
+            border: 1px solid var(--incorrect-border);
+            border-radius: 6px;
+            color: var(--incorrect-text);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .explanation-box p {
+            margin-bottom: 4px;
+        }
+
+        .explanation-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            display: block;
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Disclaimer Banner -->
+    <div class="warning-banner">
+        ⚠️ SAMPLE QUESTION REVIEW ONLY — THIS IS NOT AN OFFICIAL TEST
+    </div>
+
+    <!-- Header Section -->
+    <header>
+        <h1>GRAMMAR WEEK 32</h1>
+        <div class="header-fields">
+            <div class="field-group">
+                <label for="student-name">Student Name</label>
+                <input type="text" id="student-name" placeholder="Enter your full name">
+            </div>
+            <div class="field-group">
+                <label for="practice-date">Date</label>
+                <input type="text" id="practice-date" readonly>
+            </div>
+        </div>
+    </header>
+
+    <!-- Results Banner -->
+    <div id="score-banner">
+        <h2 id="score-text">Practice Score: 0 / 25 - 0%</h2>
+    </div>
+
+    <!-- Practice Form -->
+    <form id="quiz-form">
+        <div id="quiz-container"></div>
+        <button type="button" class="submit-btn" onclick="gradeQuiz()">Submit Practice Review</button>
+    </form>
+</div>
+
+<script>
+// Master Data Source (25 Situational Grammar Questions on Active & Passive Voice - Wednesday Lesson)
+const rawQuestions = [
+    // PART A: Multiple Choice (Q1–Q10) - Active vs Passive Voice Situations
+    {
+        id: 1,
+        part: 'A',
+        type: 'mc',
+        question: "Situation: You are writing an official report about a school event where the students cleaned the classroom. Which passive sentence correctly emphasizes the classroom?",
+        options: [
+            "The classroom was cleaned by the students.",
+            "The students were cleaned the classroom.",
+            "The classroom cleaned by the students.",
+            "The classroom was cleaning by students."
+        ],
+        answer: "The classroom was cleaned by the students.",
+        explanation: "Simple past passive requires 'was/were + past participle' (was cleaned) with the object becoming the new subject."
+    },
+    {
+        id: 2,
+        part: 'A',
+        type: 'mc',
+        question: "Situation: The head chef in a busy restaurant prepared an extraordinary dinner. Transform 'The chef cooked the meal' into the correct passive voice.",
+        options: [
+            "The meal was cooked by the chef.",
+            "The meal cooked by the chef.",
+            "The chef was cooked the meal.",
+            "The meal is cooked by chef."
+        ],
+        answer: "The meal was cooked by the chef.",
+        explanation: "In simple past, 'cooked' becomes 'was cooked' when converted from active to passive voice."
+    },
+    {
+        id: 3,
+        part: 'A',
+        type: 'mc',
+        question: "Situation: The manager is announcing an ongoing project task taking place right now: 'They are painting the wall.' What is the correct passive voice form?",
+        options: [
+            "The wall is being painted by them.",
+            "The wall was being painted by them.",
+            "The wall has been painted by them.",
+            "The wall will be painted by them."
+        ],
+        answer: "The wall is being painted by them.",
+        explanation: "Present continuous passive uses the formula: 'is/are + being + past participle' (is being painted)."
+    },
+    {
+        id: 4,
+        part: 'A',
+        type: 'mc',
+        question: "Situation: A team of engineers has successfully finished a major task. Convert 'They have completed the project' into passive voice.",
+        options: [
+            "The project has been completed by them.",
+            "The project was completed by them.",
+            "The project is being completed by them.",
+            "The project will be completed by them."
+        ],
+        answer: "The project has been completed by them.",
+        explanation: "Present perfect passive uses the formula: 'has/have + been + past participle' (has been completed)."
+    },
+    {
+        id: 5,
+        part: 'A',
+        type: 'mc',
+        question: "Situation: A mail carrier promises to deliver an important document tomorrow: 'He will deliver the package.' Select the correct passive transformation.",
+        options: [
+            "The package will be delivered by him.",
+            "The package was delivered by him.",
+            "The package is delivered by him.",
+            "The package has been delivered by him."
+        ],
+        answer: "The package will be delivered by him.",
+        explanation: "Future simple passive uses the formula: 'will + be + past participle' (will be delivered)."
+    },
+    {
+        id: 6,
+        part: 'A',
+        type: 'mc',
+        question: "Situation: You discover your missing wallet after leaving a crowded bus. Which passive sentence correctly expresses this when the doer is unknown?",
+        options: [
+            "My wallet was stolen.",
+            "My wallet stole by someone.",
+            "My wallet was steal.",
+            "My wallet is stole."
+        ],
+        answer: "My wallet was stolen.",
+        explanation: "When the doer of an action is unknown, we use passive voice with 'was + past participle' (was stolen)."
+    },
+    {
+        id: 7,
+        part: 'A',
+        type: 'mc',
+        question: "Situation: You are explaining global language trends in a formal speech. Which sentence correctly uses passive voice because the doer is unimportant?",
+        options: [
+            "English is spoken worldwide.",
+            "People are spoken English worldwide.",
+            "English speaks worldwide by people.",
+            "English was speak worldwide."
+        ],
+        answer: "English is spoken worldwide.",
+        explanation: "Simple present passive uses 'is/are + past participle' (is spoken) when focusing on an action rather than the doer."
+    },
+    {
+        id: 8,
+        part: 'A',
+        type: 'mc',
+        question: "Situation: Maria completed her annual report and submitted it. How do you rewrite 'Maria wrote the report' in passive voice?",
+        options: [
+            "The report was written by Maria.",
+            "The report was wrote by Maria.",
+            "The report wrote Maria.",
+            "The report is written by Maria."
+        ],
+        answer: "The report was written by Maria.",
+        explanation: "Simple past passive of 'wrote' requires 'was + past participle' (was written)."
+    },
+    {
+        id: 9,
+        part: 'A',
+        type: 'mc',
+        question: "Situation: While walking past the kitchen, you notice 'She was washing the dishes.' How is this expressed in past continuous passive voice?",
+        options: [
+            "The dishes were being washed by her.",
+            "The dishes was being washed by her.",
+            "The dishes were washed by her.",
+            "The dishes are being washed by her."
+        ],
+        answer: "The dishes were being washed by her.",
+        explanation: "Past continuous passive requires 'was/were + being + past participle'. For plural 'dishes', use 'were being washed'."
+    },
+    {
+        id: 10,
+        part: 'A',
+        type: 'mc',
+        question: "Situation: In a formal science report, the researcher wants to highlight the process. Which passive sentence is most appropriate for academic writing?",
+        options: [
+            "The experiment was conducted carefully.",
+            "The scientist conducted the experiment carefully.",
+            "Carefully conducted the scientist the experiment.",
+            "The experiment conducted carefully by scientist."
+        ],
+        answer: "The experiment was conducted carefully.",
+        explanation: "Passive voice ('was conducted') is standard in formal and academic writing to focus on the process rather than the scientist."
+    },
+
+    // PART B: Fill in the Blank (Q11–Q15) - Passive Voice Auxiliary & Past Participle Verbs
+    {
+        id: 11,
+        part: 'B',
+        type: 'text',
+        question: "Situation: A mechanic fixed a broken car yesterday. Active: 'He repaired the car.' -> Passive: 'The car ________ repaired by him.'",
+        answer: "was",
+        explanation: "Simple past passive requires 'was' for singular subject 'car' + past participle 'repaired'."
+    },
+    {
+        id: 12,
+        part: 'B',
+        type: 'text',
+        question: "Situation: A writer posts monthly articles online. Active: 'She writes letters.' -> Passive: 'Letters are ________ by her.'",
+        answer: "written",
+        explanation: "Simple present passive uses 'are + past participle'. The past participle of 'write' is 'written'."
+    },
+    {
+        id: 13,
+        part: 'B',
+        type: 'text',
+        question: "Situation: City contractors are constructing a road link. Active: 'They are building a bridge.' -> Passive: 'A new bridge is ________ built this year.'",
+        answer: "being",
+        explanation: "Present continuous passive requires 'is/are + being + past participle' (is being built)."
+    },
+    {
+        id: 14,
+        part: 'B',
+        type: 'text',
+        question: "Situation: An office team has submitted all files. Active: 'They have completed the project.' -> Passive: 'The project has ________ completed by them.'",
+        answer: "been",
+        explanation: "Present perfect passive uses 'has/have + been + past participle' (has been completed)."
+    },
+    {
+        id: 15,
+        part: 'B',
+        type: 'text',
+        question: "Situation: A delivery service handles orders. Active: 'He will deliver the package.' -> Passive: 'The package will ________ delivered by him.'",
+        answer: "be",
+        explanation: "Future simple passive uses 'will + be + past participle' (will be delivered)."
+    },
+
+    // PART C: Match the Definition (Q16–Q20) - Passive Voice Rules & Terms
+    {
+        id: 16,
+        part: 'C',
+        type: 'match',
+        definition: "A sentence structure where the subject performs the action directly (e.g., 'The boy kicked the ball')",
+        answer: "Active Voice",
+        explanation: "In active voice, the subject acts directly upon an object."
+    },
+    {
+        id: 17,
+        part: 'C',
+        type: 'match',
+        definition: "A sentence structure where the grammatical subject receives the action (e.g., 'The ball was kicked by the boy')",
+        answer: "Passive Voice",
+        explanation: "In passive voice, the grammatical subject receives the action of the verb."
+    },
+    {
+        id: 18,
+        part: 'C',
+        type: 'match',
+        definition: "The noun or noun phrase in a passive sentence introduced by 'by' that identifies who performed the action",
+        answer: "Agent",
+        explanation: "The agent is the person or thing performing the action in a passive structure, preceded by 'by'."
+    },
+    {
+        id: 19,
+        part: 'C',
+        type: 'match',
+        definition: "The third principal form of a verb required in all passive voice structures (e.g., cooked, written, stolen)",
+        answer: "Past Participle",
+        explanation: "All passive verb forms combine a form of 'be' with the main verb's past participle."
+    },
+    {
+        id: 20,
+        part: 'C',
+        type: 'match',
+        definition: "The noun phrase that receives the action in an active sentence and becomes the subject in a passive sentence",
+        answer: "Direct Object",
+        explanation: "The direct object of an active sentence moves to the subject position when transformed into passive voice."
+    },
+
+    // PART D: Sentence Completion (Q21–Q25) - Changing Active to Passive Step-by-Step
+    {
+        id: 21,
+        part: 'D',
+        type: 'text',
+        question: "Step-by-step conversion: In the active sentence 'The boy kicked the ball', the main verb 'kicked' must be changed into its past participle form, which is ________.",
+        answer: "kicked",
+        explanation: "The regular verb 'kick' keeps 'kicked' as its past participle form."
+    },
+    {
+        id: 22,
+        part: 'D',
+        type: 'text',
+        question: "Step-by-step conversion: Active: 'Maria wrote the report.' -> Passive: 'The report ________ written by Maria.' (Supply the simple past form of 'be')",
+        answer: "was",
+        explanation: "Simple past passive for singular subject 'The report' uses the singular auxiliary verb 'was'."
+    },
+    {
+        id: 23,
+        part: 'D',
+        type: 'text',
+        question: "Step-by-step conversion: Active: 'She was washing the dishes.' -> Passive: 'The dishes were being ________ by her.' (Supply the past participle of 'wash')",
+        answer: "washed",
+        explanation: "The past participle form of 'wash' is 'washed'."
+    },
+    {
+        id: 24,
+        part: 'D',
+        type: 'text',
+        question: "Step-by-step conversion: Active: 'They are painting the wall.' -> Passive: 'The wall is ________ painted by them.' (Supply the continuous form of 'be')",
+        answer: "being",
+        explanation: "Continuous passive forms require 'being' between the auxiliary verb 'is/are/was/were' and the past participle."
+    },
+    {
+        id: 25,
+        part: 'D',
+        type: 'text',
+        question: "Step-by-step conversion: Active: 'The chef cooked the meal.' -> Passive: 'The meal was cooked ________ the chef.' (Supply the preposition used before the agent)",
+        answer: "by",
+        explanation: "In passive voice sentences, the doer/agent is introduced using the preposition 'by'."
+    }
+];
+
+// Utility: Fisher-Yates Shuffle Algorithm
+function shuffleArray(array) {
+    let arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// Master state storing dynamically rendered questions
+let quizState = [];
+
+// Auto-fill Current Date
+document.getElementById('practice-date').value = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+});
+
+// Render Application Dynamically on Page Load
+function initQuiz() {
+    const quizContainer = document.getElementById('quiz-container');
+    quizContainer.innerHTML = '';
+
+    // Grouping Questions by Parts & Shuffling Question Order
+    const partA = shuffleArray(rawQuestions.filter(q => q.part === 'A'));
+    const partB = shuffleArray(rawQuestions.filter(q => q.part === 'B'));
+    const partC = shuffleArray(rawQuestions.filter(q => q.part === 'C'));
+    const partD = shuffleArray(rawQuestions.filter(q => q.part === 'D'));
+
+    quizState = [...partA, ...partB, ...partC, ...partD];
+
+    // Part Definitions
+    const sections = [
+        {
+            title: "Part A: Multiple Choice (Active & Passive Situations)",
+            questions: partA,
+            renderHeader: null
+        },
+        {
+            title: "Part B: Fill in the Blank (Passive Voice Structures)",
+            questions: partB,
+            renderHeader: () => {
+                const words = shuffleArray(partB.map(q => q.answer));
+                return `<div class="word-bank"><span class="word-bank-title">Word Bank</span>${words.join(' • ')}</div>`;
+            }
+        },
+        {
+            title: "Part C: Match the Definition (Grammar Terms & Concepts)",
+            questions: partC,
+            renderHeader: null
+        },
+        {
+            title: "Part D: Sentence Completion (Active to Passive Step-by-Step)",
+            questions: partD,
+            renderHeader: () => {
+                const words = shuffleArray(partD.map(q => q.answer));
+                return `<div class="word-bank"><span class="word-bank-title">Word Bank</span>${words.join(' • ')}</div>`;
+            }
+        }
+    ];
+
+    // Build Form UI
+    sections.forEach(sec => {
+        const secBox = document.createElement('div');
+        secBox.className = 'section-box';
+        
+        let html = `<div class="section-title">${sec.title}</div>`;
+        if (sec.renderHeader) html += sec.renderHeader();
+
+        // Matching Options Pool for Part C Dropdowns
+        let partCOptions = [];
+        if (sec.title.includes("Part C")) {
+            partCOptions = shuffleArray(partC.map(q => q.answer));
+        }
+
+        sec.questions.forEach((q) => {
+            const displayNum = quizState.findIndex(item => item.id === q.id) + 1;
+            
+            html += `<div class="question-item" id="q-box-${q.id}">
+                <div class="question-header">
+                    <span>${displayNum}. ${q.type === 'match' ? q.definition : q.question}</span>
+                    <span class="status-badge" id="badge-${q.id}"></span>
+                </div>`;
+
+            if (q.type === 'mc') {
+                const shuffledOpts = shuffleArray(q.options);
+                html += `<div class="options-group">`;
+                shuffledOpts.forEach(opt => {
+                    html += `<label class="option-label">
+                        <input type="radio" name="q-${q.id}" value="${opt}">
+                        <span>${opt}</span>
+                    </label>`;
+                });
+                html += `</div>`;
+            } else if (q.type === 'text') {
+                html += `<input type="text" name="q-${q.id}" placeholder="Type your answer here..." autocomplete="off">`;
+            } else if (q.type === 'match') {
+                html += `<select name="q-${q.id}">
+                    <option value="">-- Select Grammar Term --</option>`;
+                partCOptions.forEach(opt => {
+                    html += `<option value="${opt}">${opt}</option>`;
+                });
+                html += `</select>`;
+            }
+
+            // Explanation box (Hidden by default)
+            html += `<div class="explanation-box" id="exp-${q.id}"></div></div>`;
+        });
+
+        secBox.innerHTML = html;
+        quizContainer.appendChild(secBox);
+    });
+}
+
+// Grading Functionality
+function gradeQuiz() {
+    let score = 0;
+    const total = quizState.length;
+
+    quizState.forEach(q => {
+        const badge = document.getElementById(`badge-${q.id}`);
+        const expBox = document.getElementById(`exp-${q.id}`);
+        let userAns = "";
+
+        // Collect student responses
+        if (q.type === 'mc') {
+            const selected = document.querySelector(`input[name="q-${q.id}"]:checked`);
+            userAns = selected ? selected.value.trim() : "";
+        } else if (q.type === 'text') {
+            const input = document.querySelector(`input[name="q-${q.id}"]`);
+            userAns = input ? input.value.trim() : "";
+        } else if (q.type === 'match') {
+            const select = document.querySelector(`select[name="q-${q.id}"]`);
+            userAns = select ? select.value.trim() : "";
+        }
+
+        // Case-Insensitive & Trim Validation
+        const isCorrect = userAns.toLowerCase() === q.answer.toLowerCase();
+
+        if (isCorrect) {
+            score++;
+            badge.className = "status-badge correct";
+            badge.innerText = "✓ Correct";
+            
+            // Cleanly hide explanation box on correct answers
+            expBox.style.display = "none";
+            expBox.innerHTML = "";
+        } else {
+            badge.className = "status-badge incorrect";
+            badge.innerText = "X Incorrect";
+
+            // Render detailed explanation box for incorrect or unattempted questions
+            const displaySubmitted = userAns === "" ? "<em>No answer provided</em>" : `<strong>${userAns}</strong>`;
+            expBox.innerHTML = `
+                <p><strong>Your Answer:</strong> ${displaySubmitted}</p>
+                <p><strong>Correct Answer:</strong> <strong>${q.answer}</strong></p>
+                <p><strong>Explanation:</strong> ${q.explanation}</p>
+            `;
+            expBox.style.display = "block";
+        }
+    });
+
+    // Score Calculation & Banner Update
+    const percentage = Math.round((score / total) * 100);
+    const scoreBanner = document.getElementById('score-banner');
+    const scoreText = document.getElementById('score-text');
+    
+    scoreText.innerText = `Practice Score: ${score} / ${total} - ${percentage}%`;
+    scoreBanner.style.display = "block";
+
+    // Scroll smoothly to score banner
+    scoreBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// Initialize quiz structure on window load
+window.onload = initQuiz;
+</script>
+
+</body>
+</html>
